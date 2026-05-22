@@ -1,20 +1,38 @@
 import { useState } from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
+import { auth } from "../firebase";
 const Login = ({ setIsAdmin }) => {
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
 
-  const handleLogin = () => {
-    if (user === "admin" && pass === "1234") {
-      setIsAdmin(true);
-      localStorage.setItem("admin", "true");
-    } else {
-      alert("Invalid credentials");
-    }
-  };
+  const handleLogin = async () => {
 
+  try {
+
+    await signInWithEmailAndPassword(
+      auth,
+      user,
+      pass
+    );
+
+    setIsAdmin(true);
+
+    alert("Login successful");
+
+  } catch (error) {
+
+    alert(error.message);
+  }
+};
   return (
-    <div className="bg-white p-6 rounded-xl shadow-md">
+    <form
+  onSubmit={(e) => {
+    e.preventDefault();
+    handleLogin();
+  }}
+  className="bg-white p-6 rounded-xl shadow-md"
+>
       <h2 className="text-lg font-semibold mb-2">Admin Login</h2>
 
       <input
@@ -32,13 +50,12 @@ const Login = ({ setIsAdmin }) => {
         className="border p-2 w-full mb-2 rounded"
       />
 
-      <button
-        onClick={handleLogin}
+      <button type="submit"
         className="bg-black text-white px-4 py-2 rounded w-full"
       >
         Login
       </button>
-    </div>
+    </form>
   );
 };
 
